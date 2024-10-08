@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="./index.css">
+    <script src="https://kit.fontawesome.com/d472f0af05.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="music-player">
+            <nav>
+                <div class="icon">
+                    <i class="fa-solid fa-angle-left"></i>
+                </div>
+                <div class="icon">
+                    <i class="fa-solid fa-bars"></i>
+                </div>
+            </nav>
+
+            <img id="singer">
+            <h2 id="singerName"></h2>
+            <p id="songname"></p>
+            <audio id="song">
+                <source id="songfile">
+            </audio>
+            <input type="range" value="0" id="progress">
+
+            <div class="controls">
+                <div onclick="previousSong()" id="prevbtn"><i class="fa-solid fa-forward"></i></div>
+                <div onclick="play()" id="playbtn"><i class="fa-solid fa-play" id="playicon"></i></div>
+                <div onclick="nextSong()" id="nextbtn"><i class="fa-solid fa-backward"></i></div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        let song = document.getElementById('song');
+        let singer = document.getElementById('singer');
+        let prograss = document.getElementById('progress');
+        let playIcon = document.getElementById('playicon');
+        let songName = document.getElementById('songname');
+        let songFile = document.getElementById('songfile');
+        let singerName = document.getElementById('singerName');
+
+        let playlist = [
+            {   
+                name:'Anirudh Ravichandhran',
+                image:'./images/anirudh.png',
+                title:'Amma Amma song - VIP',
+                file:'./images/Amma-Amma.mp3'
+            },
+            {
+                name:'Pradeep Kumar',
+                image:'./images/pradeep.png',
+                title:'Kaatrodu Pattam Pola song - Ayothi',
+                file:'./images/Kaatrodu Pattam Pola.mp3'
+            },
+            {
+                name:'Yuvan Shanker Raja',
+                image:'./images/yuvan.png',
+                title:'Kadhal-Aasai song- Anjaan ',
+                file:'./images/Kadhal-Aasai.mp3'
+            },
+            {
+                name:'Pradeep Kumar',
+                image:'./images/pradeep.png',
+                title:'Naan-Gaali song - Good Night',
+                file:'./images/Naan-Gaali.mp3'
+            },
+            {
+                name:'Sid Sriram',
+                image:'./images/sid_sriram.png',
+                title:'Thaarame Thaarame -Kadaram Kondan',
+                file:'./images/Thaarame-Thaarame.mp3'
+            },
+            {
+                name:'Pradeep Kumar',
+                image:'./images/pradeep.png',
+                title:'Railin - Oligal - Chitha',
+                file:'./images/Railin-Oligal.mp3'
+            }
+        
+    ]
+
+    let currentSongIndex = 0; // Keep track of the current song
+
+        // Load the current song into the audio player
+        function loadSong(songIndex) {
+            let songData = playlist[songIndex];
+            singerName.textContent = songData.name;
+            singer.src = songData.image;
+            songFile.src = songData.file;
+            songName.textContent = `${songData.title}`;
+            song.load(); // Reload the song with the new source
+        }
+
+        song.onloadedmetadata = ()=>{
+            prograss.max = song.duration;
+            prograss.value = song.currentTime;
+        }
+
+        function play(){
+
+            if(playIcon.classList.contains("fa-pause")){
+                song.pause();
+                playIcon.classList.remove("fa-pause");
+                playIcon.classList.add('fa-play');
+            }
+            else {
+                song.play();
+                playIcon.classList.add("fa-pause");
+                playIcon.classList.remove('fa-play');
+            }
+        }
+
+        // Go to the next song in the playlist
+
+        function nextSong() {
+            currentSongIndex = (currentSongIndex + 1) % playlist.length;
+            loadSong(currentSongIndex);
+            play();
+            song.play();
+            playIcon.classList.add("fa-pause");
+            playIcon.classList.remove('fa-play'); // Start playing the new song
+        }
+        // Start playing the previous song
+
+        function previousSong() {
+            currentSongIndex = (currentSongIndex - 1 + playlist.length) % playlist.length;
+            loadSong(currentSongIndex);
+            play(); 
+            song.play();
+            playIcon.classList.add("fa-pause");
+            playIcon.classList.remove('fa-play');
+        }
+
+        // Update progress bar based on song time
+        
+        if (song.play()) {
+            prograss.value = song.currentTime;
+        }
+
+        setInterval(()=>{
+            prograss.value = song.currentTime;
+        },500);
+
+        prograss.onchange = ()=>{
+            song.currentTime = prograss.value;
+        }
+        loadSong(currentSongIndex);
+
+    </script>
+
+</body>
+</html>
